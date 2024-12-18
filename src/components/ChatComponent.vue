@@ -18,7 +18,6 @@ onMounted(() => {
 watch(
   () => route.params.id,
   (user) => {
-    console.log(user)
     loadChat(user)
   },
 )

@@ -17,7 +17,6 @@ const imageUrl =
   userStore.userData.avatar
 
 function addFriend() {
-  console.log('Opening AddFriend dialog...')
   dialog.open(AddFriend, {
     props: {
       header: 'Add friend',
