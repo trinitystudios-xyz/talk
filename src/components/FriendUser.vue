@@ -13,12 +13,21 @@ import UserDetails from './UserDetails.vue'
 const name = ref('')
 const tag = ref('')
 const imageUrl = ref('')
+const lastSeen = ref('')
+const currentTime = ref('')
 
 onMounted(async () => {
   const user = await pb.collection('users').getOne(props.user)
 
   name.value = user.name
   tag.value = user.tag
+  lastSeen.value = user.lastSeen
+
+  pb.collection('users').subscribe(user.id, (e) => {
+    if (e.action === 'update') {
+      lastSeen.value = e.record.lastSeen
+    }
+  })
 
   imageUrl.value =
     import.meta.env.VITE_POCKETBASE_URL +
@@ -28,6 +37,11 @@ onMounted(async () => {
     user.id +
     '/' +
     user.avatar
+
+  currentTime.value = Date.now()
+  setInterval(() => {
+    currentTime.value = Date.now()
+  }, 1000)
 })
 
 function goToChat() {
@@ -40,7 +54,12 @@ function goToChat() {
   <div class="flex items-center w-full justify-between p-2">
     <Button fluid class="text-left" variant="text" severity="contrast" @click="goToChat">
       <div class="flex items-center w-full">
-        <UserDetails :name="name" :tag="tag" :image="imageUrl"></UserDetails>
+        <UserDetails
+          :name="name"
+          :tag="tag"
+          :image="imageUrl"
+          :online="currentTime - Date.parse(lastSeen) < 60000"
+        ></UserDetails>
       </div>
     </Button>
   </div>
