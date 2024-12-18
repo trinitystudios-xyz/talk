@@ -95,6 +95,7 @@ async function loadChat(user) {
         '")',
       sort: '-created',
       expand: 'from',
+      skipTotal: true,
     })
     messageList.value = messages.items
 
@@ -118,6 +119,29 @@ async function loadChat(user) {
     state.value = 'valid'
   }
 }
+
+async function loadMore() {
+  const oldestMessageDate = messageList.value[messageList.value.length - 1].created
+  console.log(oldestMessageDate)
+  const messages = await pb.collection('messages').getList(1, 20, {
+    filter:
+      '((from = "' +
+      userStore.userData.id +
+      '" && to = "' +
+      route.params.id +
+      '") || (from = "' +
+      route.params.id +
+      '" && to = "' +
+      userStore.userData.id +
+      '")) && created < "' +
+      oldestMessageDate +
+      '"',
+    sort: '-created',
+    expand: 'from',
+    skipTotal: true,
+  })
+  messageList.value.push(...messages.items)
+}
 </script>
 
 <template>
@@ -133,13 +157,16 @@ async function loadChat(user) {
     <p class="mt-6 text-2xl font-semibold">This user is not in your friendlist :(</p>
   </div>
   <div v-if="state === 'valid'" class="flex flex-col h-screen flex-grow">
-    <div class="h-full flex flex-col-reverse overflow-y-auto">
+    <div class="h-full flex flex-col-reverse overflow-y-auto" id="messageWindow">
       <MessageComponent
         v-for="msg in messageList"
         v-bind:key="msg.id"
         :msg
         :own="msg.from === userStore.userData.id"
       ></MessageComponent>
+      <Divider v-if="messageList.length >= 20">
+        <Button label="Load more messages" severity="secondary" @click="loadMore"></Button>
+      </Divider>
     </div>
     <div class="flex p-4 gap-4">
       <Textarea

@@ -28,7 +28,7 @@ onUnmounted(() => {})
 </script>
 
 <template>
-  <main>
+  <main class="dark:bg-surface-900">
     <DynamicDialog />
     <Toast position="bottom-right" />
     <div class="flex justify-left w-screen">
