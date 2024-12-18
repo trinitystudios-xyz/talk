@@ -10,9 +10,9 @@ function scrollToDetails() {
     <div class="flex-1 flex items-center justify-center">
       <div class="p-6 pt-12 lg:p-12">
         <h1
-          class="text-3xl lg:text-5xl font-bold text-surface-900 dark:text-surface-0 mb-4 lg:leading-normal text-center lg:text-left"
+          class="relative text-3xl lg:text-6xl font-bold text-surface-900 dark:text-surface-0 mb-4 lg:leading-normal text-center lg:text-left"
         >
-          Crystal calls, <span class="text-primary">free forever</span>.
+          <span class="crystal">Crystal</span> calls, free forever.
         </h1>
         <p
           class="text-surface-700 dark:text-surface-200 leading-normal mb-8 text-center lg:text-left"
@@ -143,3 +143,23 @@ function scrollToDetails() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.crystal {
+  background-image: url('/images/daniele-levis-pelusi-NXt2h4AQZVU-unsplash.jpg');
+  background-size: cover;
+  background-clip: text;
+  color: transparent;
+}
+
+.crystal::before {
+  display: block;
+  position: absolute;
+  content: 'Crystal';
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: color;
+  pointer-events: none;
+  @apply text-primary;
+}
+</style>
