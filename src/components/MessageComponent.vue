@@ -1,5 +1,6 @@
 <script setup>
 import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 import { ref, onMounted, defineProps, useTemplateRef } from 'vue'
 
 const props = defineProps(['msg', 'own'])
@@ -13,9 +14,11 @@ const timeStyle = new Intl.DateTimeFormat(undefined, {
 const imageUrl = ref('')
 
 onMounted(() => {
-  msgContainer.value.innerHTML = marked.parse(props.msg.message, {
-    breaks: true,
-  })
+  msgContainer.value.innerHTML = DOMPurify.sanitize(
+    marked.parse(props.msg.message, {
+      breaks: true,
+    }),
+  )
 
   imageUrl.value =
     import.meta.env.VITE_POCKETBASE_URL +
