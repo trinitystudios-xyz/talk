@@ -12,7 +12,7 @@ function scrollToDetails() {
         <h1
           class="relative text-3xl lg:text-6xl font-bold text-surface-900 dark:text-surface-0 mb-4 lg:leading-normal text-center lg:text-left"
         >
-          <span class="crystal">Crystal</span> calls, free forever.
+          <span class="crystal drop-shadow-lg">Crystal</span> calls, free forever.
         </h1>
         <p
           class="text-surface-700 dark:text-surface-200 leading-normal mb-8 text-center lg:text-left"
@@ -36,7 +36,7 @@ function scrollToDetails() {
     </div>
   </div>
 
-  <div class="bg-surface-0 dark:bg-surface-950 px-6 py-20 md:px-12 lg:px-20 h-screen">
+  <div class="bg-surface-200 dark:bg-surface-950 px-6 py-20 md:px-12 lg:px-20">
     <div class="font-bold text-4xl lg:text-6xl mb-6 text-center text-primary">Peer-to-Peer</div>
     <div
       class="text-surface-700 dark:text-surface-0/70 text-xl mb-12 text-center leading-normal mx-auto max-w-4xl"
@@ -141,6 +141,9 @@ function scrollToDetails() {
         </ul>
       </div>
     </div>
+  </div>
+  <div class="h-12 flex justify-center items-center bg-surface-0 dark:bg-surface-900">
+    <p>Developed by ZyphenVisuals. Powered by TrinityStudios. ©2024</p>
   </div>
 </template>
 
