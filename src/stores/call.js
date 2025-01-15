@@ -2,6 +2,12 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { Peer } from 'peerjs'
 
+import { useSound } from '@vueuse/sound'
+import incomingSoundPath from '@/assets/audio/incoming.mp3'
+import outgoingSoundPath from '@/assets/audio/outgoing.mp3'
+import connectSoundPath from '@/assets/audio/connect.mp3'
+import disconnectSoundPath from '@/assets/audio/disconnect.mp3'
+
 import { useUserStore } from './user'
 import { useStreamStore } from './stream'
 
@@ -17,7 +23,27 @@ export const useCallStore = defineStore('call', () => {
   const callerID = ref('')
   const foreignStream = ref()
 
+  // Sounds
+  const audioSettings = {
+    volume: 0.5,
+    interrupt: false,
+  }
+  const incomingSound = useSound(incomingSoundPath, audioSettings)
+  const outgoingSound = useSound(outgoingSoundPath, audioSettings)
+  const connectSound = useSound(connectSoundPath, audioSettings)
+  const disconnectSound = useSound(disconnectSoundPath, audioSettings)
+
   // Actions
+  function playOnlySound(sound) {
+    // stop all sounds
+    incomingSound.stop()
+    outgoingSound.stop()
+    connectSound.stop()
+    disconnectSound.stop()
+    // play the sound
+    sound.play()
+  }
+
   function initialize() {
     peer = new Peer(
       userStore.userData.id,
@@ -47,6 +73,9 @@ export const useCallStore = defineStore('call', () => {
       // set the status to calling
       status.value = 'incoming'
 
+      // play the sound
+      playOnlySound(incomingSound)
+
       // store the call
       connection = call
 
@@ -59,8 +88,11 @@ export const useCallStore = defineStore('call', () => {
 
           // close the connection
           call.close()
+
+          // play the sound
+          playOnlySound(disconnectSound)
         }
-      }, 15000)
+      }, 20000)
     })
   }
 
@@ -80,6 +112,9 @@ export const useCallStore = defineStore('call', () => {
 
       // store the foreign stream
       foreignStream.value = stream
+
+      // play the sound
+      playOnlySound(connectSound)
     })
 
     // when the call is closed
@@ -89,12 +124,18 @@ export const useCallStore = defineStore('call', () => {
 
       // stop the video stream
       streamStore.stop()
+
+      // play the sound
+      playOnlySound(disconnectSound)
     })
   }
 
   async function call(id) {
     // set the status to calling
     status.value = 'calling'
+
+    // play the sound
+    playOnlySound(outgoingSound)
 
     // store the caller id
     callerID.value = id
@@ -121,6 +162,9 @@ export const useCallStore = defineStore('call', () => {
 
       // store the foreign stream
       foreignStream.value = stream
+
+      // play the sound
+      playOnlySound(connectSound)
     })
 
     // when the call is closed
@@ -130,6 +174,9 @@ export const useCallStore = defineStore('call', () => {
 
       // stop the video stream
       streamStore.stop()
+
+      // play the sound
+      playOnlySound(disconnectSound)
     })
 
     // on eror
@@ -150,8 +197,11 @@ export const useCallStore = defineStore('call', () => {
 
         // close the connection
         peerCall.close()
+
+        // play the sound
+        playOnlySound(disconnectSound)
       }
-    }, 15000)
+    }, 20000)
   }
 
   function disconnect() {
