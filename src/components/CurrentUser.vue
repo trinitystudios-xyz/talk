@@ -4,7 +4,9 @@ const userStore = useUserStore()
 
 import { useDialog } from 'primevue'
 const dialog = useDialog()
-import AddFriend from './dialogs/AddFriend.vue'
+import AddFriendDialog from './dialogs/AddFriendDialog.vue'
+import SettingsDialog from './dialogs/SettingsDialog.vue'
+
 import UserDetails from './UserDetails.vue'
 
 const imageUrl =
@@ -17,11 +19,23 @@ const imageUrl =
   userStore.userData.avatar
 
 function addFriend() {
-  dialog.open(AddFriend, {
+  dialog.open(AddFriendDialog, {
     props: {
       header: 'Add friend',
       modal: true,
       draggable: false,
+    },
+  })
+}
+
+function openSettings() {
+  dialog.open(SettingsDialog, {
+    props: {
+      header: 'Settings',
+      modal: true,
+      draggable: false,
+      maximizable: true,
+      style: { width: '50%' },
     },
   })
 }
@@ -44,7 +58,14 @@ function addFriend() {
         variant="text"
         @click="addFriend"
       />
-      <Button icon="pi pi-cog" aria-label="Settings" severity="secondary" rounded variant="text" />
+      <Button
+        icon="pi pi-cog"
+        aria-label="Settings"
+        severity="secondary"
+        rounded
+        variant="text"
+        @click="openSettings"
+      />
       <Button
         icon="pi pi-sign-out"
         aria-label="Sign out"

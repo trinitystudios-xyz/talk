@@ -22,6 +22,21 @@ onMounted(async () => {
     console.log('Pinging server at ', ls)
     await pb.collection('users').update(userStore.userData.id, { lastSeen: ls })
   }, 30000)
+
+  // get user media permissions
+  navigator.permissions.query({ name: 'camera' }).then((result) => {
+    if (result.state === 'prompt') {
+      navigator.getUserMedia(
+        { video: true, audio: true },
+        (stream) => {
+          for (const track of stream.getTracks()) {
+            track.stop()
+          }
+        },
+        () => {},
+      )
+    }
+  })
 })
 
 onUnmounted(() => {})
