@@ -9,14 +9,18 @@ import SettingsDialog from './dialogs/SettingsDialog.vue'
 
 import UserDetails from './UserDetails.vue'
 
-const imageUrl =
-  import.meta.env.VITE_POCKETBASE_URL +
-  '/api/files/' +
-  userStore.userData.collectionId +
-  '/' +
-  userStore.userData.id +
-  '/' +
-  userStore.userData.avatar
+let imageUrl
+
+if (userStore.userData.avatar) {
+  imageUrl =
+    import.meta.env.VITE_POCKETBASE_URL +
+    '/api/files/' +
+    userStore.userData.collectionId +
+    '/' +
+    userStore.userData.id +
+    '/' +
+    userStore.userData.avatar
+}
 
 function addFriend() {
   dialog.open(AddFriendDialog, {

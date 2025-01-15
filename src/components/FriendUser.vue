@@ -29,14 +29,16 @@ onMounted(async () => {
     }
   })
 
-  imageUrl.value =
-    import.meta.env.VITE_POCKETBASE_URL +
-    '/api/files/' +
-    user.collectionId +
-    '/' +
-    user.id +
-    '/' +
-    user.avatar
+  if (user.avatar) {
+    imageUrl.value =
+      import.meta.env.VITE_POCKETBASE_URL +
+      '/api/files/' +
+      user.collectionId +
+      '/' +
+      user.id +
+      '/' +
+      user.avatar
+  }
 
   currentTime.value = Date.now()
   setInterval(() => {

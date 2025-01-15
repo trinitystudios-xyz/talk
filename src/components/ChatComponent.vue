@@ -7,6 +7,9 @@ const route = useRoute()
 import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
 
+import { useCallStore } from '@/stores/call'
+const callStore = useCallStore()
+
 import pb from '@/pocketbase'
 
 const state = ref('null')
@@ -120,6 +123,10 @@ async function loadChat(user) {
   }
 }
 
+function callUser() {
+  callStore.call(route.params.id)
+}
+
 async function loadMore() {
   const oldestMessageDate = messageList.value[messageList.value.length - 1].created
   console.log(oldestMessageDate)
@@ -145,18 +152,18 @@ async function loadMore() {
 </script>
 
 <template>
-  <div v-if="state === 'null'" class="flex flex-col items-center justify-center h-screen flex-grow">
+  <div v-if="state === 'null'" class="flex flex-col items-center justify-center flex-grow h-full">
     <span class="pi pi-compass !text-7xl"></span>
     <p class="mt-6 text-2xl font-semibold">Select a chat to start messaging.</p>
   </div>
   <div
     v-if="state === 'invalid'"
-    class="flex flex-col items-center justify-center h-screen flex-grow"
+    class="flex flex-col items-center justify-center flex-grow h-full"
   >
     <span class="pi pi-exclamation-triangle !text-7xl"></span>
     <p class="mt-6 text-2xl font-semibold">This user is not in your friendlist :(</p>
   </div>
-  <div v-if="state === 'valid'" class="flex flex-col h-screen flex-grow">
+  <div v-if="state === 'valid'" class="flex flex-col h-full flex-grow">
     <div class="h-full flex flex-col-reverse overflow-y-auto" id="messageWindow">
       <MessageComponent
         v-for="msg in messageList"
@@ -168,7 +175,7 @@ async function loadMore() {
         <Button label="Load more messages" severity="secondary" @click="loadMore"></Button>
       </Divider>
     </div>
-    <div class="flex p-4 gap-4">
+    <div class="flex p-4 gap-4 items-center">
       <Textarea
         name="message"
         placeholder="Write a message..."
@@ -180,10 +187,17 @@ async function loadMore() {
       ></Textarea>
       <Button
         icon="pi pi-send"
-        severity="primary"
+        severity="secondary"
         aria-label="Send message"
         v-bind:disabled="message.length === 0"
         @click="sendMessage"
+      ></Button>
+      <Button
+        icon="pi pi-phone"
+        severity="primary"
+        aria-label="Call user"
+        v-bind:disabled="callStore.status != 'idle' || route.params.id == userStore.userData.id"
+        @click="callUser"
       ></Button>
     </div>
   </div>

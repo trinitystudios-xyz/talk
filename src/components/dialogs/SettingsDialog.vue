@@ -1,21 +1,44 @@
 <script setup>
+import { watch } from 'vue'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
+import { useSettingsStore } from '@/stores/settings'
+import { storeToRefs } from 'pinia'
+import { onBeforeUnmount } from 'vue'
+import { useStreamStore } from '@/stores/stream'
 
 // options
 const videoDevices = ref([])
 const audioDevices = ref([])
 
 // values
-const videoDevice = ref()
-const videoResolution = ref()
-const videoFramerate = ref()
+const {
+  videoDevice,
+  videoResolution,
+  videoFramerate,
+  audioDevice,
+  audioChannels,
+  audioAutoGainControl,
+  audioNoiseSuppression,
+  audioEchoCancellation,
+} = storeToRefs(useSettingsStore())
+const streamStore = useStreamStore()
 
-const audioDevice = ref()
-const audioChannels = ref()
-const autoGainControl = ref()
-const noiseSuppression = ref()
-const echoCancellation = ref()
+watch(
+  [
+    videoDevice,
+    videoResolution,
+    videoFramerate,
+    audioDevice,
+    audioChannels,
+    audioAutoGainControl,
+    audioNoiseSuppression,
+    audioEchoCancellation,
+  ],
+  () => {
+    streamStore.refresh()
+  },
+)
 
 onMounted(() => {
   // get video devices
@@ -42,6 +65,21 @@ onMounted(() => {
     }
   })
 })
+
+onBeforeUnmount(() => {
+  // stop the video stream
+  streamStore.stop()
+})
+
+// show preview video
+function showPreview() {
+  // get video stream
+  streamStore.start()
+
+  // hide the start button
+  const button = document.getElementById('previewButton')
+  button.style.display = 'none'
+}
 </script>
 
 <template>
@@ -56,6 +94,7 @@ onMounted(() => {
         v-model="videoDevice"
         :options="videoDevices"
         optionLabel="label"
+        optionValue="deviceId"
         placeholder="Default"
         showClear
       >
@@ -64,14 +103,28 @@ onMounted(() => {
       <SelectButton
         id="videoResolution"
         v-model="videoResolution"
-        :options="['480p', 'Max']"
+        :options="['480p', '1080p', 'Max']"
       ></SelectButton>
       <label for="videoFramerate">Framerate</label>
       <SelectButton
         id="frameRate"
         v-model="videoFramerate"
-        :options="['30fps', 'Max']"
+        :options="['30fps', '60fps']"
       ></SelectButton>
+      <div class="w-full aspect-video bg-surface-800 mt-4 rounded-md relative">
+        <video
+          :srcObject.prop="streamStore.stream"
+          class="w-full h-full object-cover p-0 m-0 rounded-md absolute"
+          autoplay
+          muted
+        ></video>
+        <Button
+          id="previewButton"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          @click="showPreview"
+          >Preview video</Button
+        >
+      </div>
       <h3>Audio</h3>
       <label for="audioDevice">Device</label>
       <Select
@@ -79,6 +132,7 @@ onMounted(() => {
         v-model="audioDevice"
         :options="audioDevices"
         optionLabel="label"
+        optionValue="deviceId"
         placeholder="Default"
         showClear
       ></Select>
@@ -90,15 +144,15 @@ onMounted(() => {
       ></SelectButton>
       <p>Options</p>
       <div class="flex gap-4 items-center">
-        <ToggleSwitch id="autoGainControl" v-model="autoGainControl"></ToggleSwitch>
+        <ToggleSwitch id="autoGainControl" v-model="audioAutoGainControl"></ToggleSwitch>
         <label for="autoGainControl">Automatic Gain Control</label>
       </div>
       <div class="flex gap-4 items-center">
-        <ToggleSwitch id="noiseSuppression" v-model="noiseSuppression"></ToggleSwitch>
+        <ToggleSwitch id="noiseSuppression" v-model="audioNoiseSuppression"></ToggleSwitch>
         <label for="noiseSuppression">Noise suppression</label>
       </div>
       <div class="flex gap-4 items-center">
-        <ToggleSwitch id="echoCancellation" v-model="echoCancellation"></ToggleSwitch>
+        <ToggleSwitch id="echoCancellation" v-model="audioEchoCancellation"></ToggleSwitch>
         <label for="echoCancellation">Echo cancellation</label>
       </div>
     </div>
