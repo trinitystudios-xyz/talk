@@ -51,7 +51,7 @@ async function sendMessage() {
     await pb.collection('messages').create({
       from: userStore.userData.id,
       to: route.params.id,
-      message: message.value,
+      message: message.value.trim(),
     })
 
     // clear the  input
@@ -189,7 +189,7 @@ async function loadMore() {
         icon="pi pi-send"
         severity="secondary"
         aria-label="Send message"
-        v-bind:disabled="message.length === 0"
+        v-bind:disabled="message.trim().length === 0"
         @click="sendMessage"
       ></Button>
       <Button
