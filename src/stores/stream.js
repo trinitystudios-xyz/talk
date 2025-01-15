@@ -62,10 +62,10 @@ export const useStreamStore = defineStore('stream', () => {
     stream.value = undefined
   }
 
-  function refresh() {
+  async function refresh() {
     if (stream.value) {
       stop()
-      start()
+      await start()
     }
   }
 

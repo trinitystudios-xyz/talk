@@ -6,6 +6,7 @@ import { useSettingsStore } from '@/stores/settings'
 import { storeToRefs } from 'pinia'
 import { onBeforeUnmount } from 'vue'
 import { useStreamStore } from '@/stores/stream'
+import { useCallStore } from '@/stores/call'
 
 // options
 const videoDevices = ref([])
@@ -23,6 +24,8 @@ const {
   audioEchoCancellation,
 } = storeToRefs(useSettingsStore())
 const streamStore = useStreamStore()
+
+const callStore = useCallStore()
 
 watch(
   [
@@ -68,7 +71,9 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   // stop the video stream
-  streamStore.stop()
+  if (callStore.status == 'idle') {
+    streamStore.stop()
+  }
 })
 
 // show preview video
@@ -117,6 +122,7 @@ function showPreview() {
           class="w-full h-full object-cover p-0 m-0 rounded-md absolute"
           autoplay
           muted
+          v-if="callStore.status == 'idle'"
         ></video>
         <Button
           id="previewButton"

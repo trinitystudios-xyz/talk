@@ -33,6 +33,25 @@ export const useCallStore = defineStore('call', () => {
   const connectSound = useSound(connectSoundPath, audioSettings)
   const disconnectSound = useSound(disconnectSoundPath, audioSettings)
 
+  // React to camera changes]
+  streamStore.$onAction(({ name, after }) => {
+    if (name == 'refresh' && status.value == 'connected') {
+      after(() => {
+        // log the change
+        console.log('Replacing media tracks')
+
+        // replace the media tracks
+        console.log(connection)
+        connection.peerConnection
+          .getSenders()[1]
+          .replaceTrack(streamStore.stream.getVideoTracks()[0])
+        connection.peerConnection
+          .getSenders()[0]
+          .replaceTrack(streamStore.stream.getAudioTracks()[0])
+      })
+    }
+  })
+
   // Actions
   function playOnlySound(sound) {
     // stop all sounds
