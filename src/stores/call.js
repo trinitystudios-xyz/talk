@@ -69,8 +69,9 @@ export const useCallStore = defineStore('call', () => {
       {
         host: 'trinitygames.xyz',
         path: '/peer',
-        port: 80,
+        port: 443,
         key: 't3peer',
+        secure: true,
       },
       3,
     )
