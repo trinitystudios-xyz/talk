@@ -71,6 +71,7 @@ export const useCallStore = defineStore('call', () => {
         path: '/peer',
         port: 80,
         key: 't3peer',
+        secure: false,
       },
       3,
     )
