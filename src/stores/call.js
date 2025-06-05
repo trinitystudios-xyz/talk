@@ -67,7 +67,7 @@ export const useCallStore = defineStore('call', () => {
     peer = new Peer(
       userStore.userData.id,
       {
-        host: 'trinitygames.xyz',
+        host: 'talk-peer.trinitystudios.xyz',
         path: '/peer',
         port: 443,
         key: 't3peer',
