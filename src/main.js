@@ -4,6 +4,8 @@ import './style.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
+import { createPlausible } from 'v-plausible/vue'
+
 import PrimeVue from 'primevue/config'
 import { definePreset } from '@primevue/themes'
 import Aura from '@primevue/themes/aura'
@@ -44,6 +46,21 @@ app.use(PrimeVue, {
 })
 app.use(DialogService)
 app.use(ToastService)
+
+const plausible = createPlausible({
+  init: {
+    domain: 'talk.trinitystudios.xyz',
+    apiHost: 'https://plausible.trinitystudios.xyz',
+    trackLocalhost: false,
+  },
+  settings: {
+    enableAutoOutboundTracking: false,
+    enableAutoPageviews: true,
+  },
+  partytown: false,
+})
+
+app.use(plausible)
 
 app.provide('pb', client)
 
