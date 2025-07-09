@@ -50,7 +50,7 @@ app.use(ToastService)
 const plausible = createPlausible({
   init: {
     domain: 'talk.trinitystudios.xyz',
-    apiHost: 'https://plausible.trinitystudios.xyz',
+    apiHost: 'https://pa.trinitystudios.xyz',
     trackLocalhost: false,
   },
   settings: {
